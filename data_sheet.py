@@ -12,14 +12,16 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "user"
     id = Column(Integer,primary_key=True)
-    username = Column(String(50))
+    phone = Column(String(20))
+    email = Column(String(50))
     password = Column(String(50))
 
     def __repr__(self):
         ID = self.id
-        USERNAME = self.username
+        PHONE = self.phone
         PASSWORD = self.password
-        return f"User: username: {USERNAME},page:{PASSWORD},id: {ID}"
+        EMAIL = self.email
+        return f"User: phone: {PHONE},page:{PASSWORD},email:{EMAIL},id: {ID}"
 
 
 

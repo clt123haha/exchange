@@ -180,12 +180,12 @@ def moblie_login():
 @app.route('/user/login/password')
 def check_password():
     print()
-    username = request.json.get("username")
+    account = request.json.get("account")
     password = request.json.get("password")
     cheakpassword = request.json.get("cheakpassword")
     indonesia = request.json.get("Indonesia")
     ischeak = check_Indonesia(indonesia)
-    result = session.query(User).filter(User.username == username).first()
+    result = session.query(User).filter(User.phone == account).first()
     if ischeak == False:
         return {'code': 304, 'message': '验证码错误'}
     if cheakpassword != password:
