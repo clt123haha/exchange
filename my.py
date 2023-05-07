@@ -152,6 +152,7 @@ def test():
             session.commit()
         else:
             result.meaasge = indonesia
+            result.time = str(time.time())
             session.add(result)
             session.commit()
     except Exception as e:
