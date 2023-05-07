@@ -120,7 +120,7 @@ def short_message(mobile):
         'account': 'C99499604',  # 用户名
         'password': 'f8306695d35f13813318e04e6a2c4349',
         'mobile': mobile,  # 要发送的号码
-        'content': '您的验证码是：{}。请不要把验证码泄露给其他人。'.format(str),  # 发送的
+        'content': '您的验证码是{}，十分钟内有效，请不要泄露给他人。'.format(str),  # 发送的
         'format': 'json',  # 格式类型
     }
 
