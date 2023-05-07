@@ -1,0 +1,110 @@
+<html class="x-admin-sm">
+<head><meta charset="UTF-8"></head>
+<div class="login layui-anim layui-anim-up">
+<body>
+        <div class="message">管理员登录</div>
+        <div id="darkbannerwrap"></div>
+
+        <form  class="layui-form"  method="post">
+            <input type="hidden" id="err" value="{{err}}">
+            <input name="user_name" id="user_name" placeholder="用户名" type="text" lay-verify="required" class="layui-input" value="">
+            <hr class="hr15">
+            <input name="user_passwd"  id="user_passwd" lay-verify="required" placeholder="密码" type="password" class="layui-input" value="">
+            <hr class="hr15">
+           <table>
+               <tr>
+                   <td>
+                       <input type="text"  name='your_in' id="your_in" title="请输入验证码" placeholder="验证码(不区分大小写)" class="layui-input"/>
+                   </td>
+                   <td>
+                       <a href="javascript:void(0)" onclick="Change()"><img src="" id="captcha"></a><br>
+                        <a href="javascript:void(0)" onclick="Change()">看不清楚，换一张</a><br>
+                   </td>
+               </tr>
+           </table>
+
+
+            <hr class="hr15">
+            <input value="登录" lay-submit lay-filter="login" style="width:100%;" type="button" id="button">
+            <hr class="hr20" >
+        </form>
+
+</div></div></div>
+</body>
+<script>
+	 //验证码
+             function Change() {
+                     $.ajax({
+                       url: '{{ url_for('admin_views.get_captcha') }}',
+                       async: true,
+                       type: "GET",
+                       success: function (data) {
+                         document.getElementById("captcha").src = data;
+                       }
+                     })
+                   }
+         //监听回车键提交from表单
+		$('#your_in').on('keydown', function (event) {
+            if (event.keyCode == 13) {
+            layui.use('form', function(){
+              var form = layui.form;
+                  $.ajax({
+                      url:'/api/user/login/',   //调用验证接口
+                      method:'post',
+                      data:{
+                    'user_name':$( "input[name='user_name']").val(),
+                    'user_passwd':$( "input[name='user_passwd']").val(),
+                          'code':$( "input[name='your_in']").val(),
+            },
+
+
+                      //请求的页面响应成功，则进行处理：
+                    success: function(res) {
+                          var  data = JSON.parse(res);
+                    if (data.code ==200) {
+
+                      x = $.cookie('token');
+
+                        layer.msg('登录成功', {
+                            icon: 1,
+                            time: 2000
+                        },
+                        function() {
+                            if(document.referrer !='/'){
+                                location.href = '/index/'
+                        }
+                        else{
+                            location.href = '/index/';}
+                            var fun ='go'
+                            collect.fu(fun)
+
+                            return false;
+
+                        });
+
+                    } else {
+
+                        data = JSON.parse(res)
+                        layer.msg( data.msg);
+                        return false;
+                    }
+                },
+                      //请求的页面响应失败，则进行处理：
+                      error: function(data) {
+                    layer.msg(JSON.stringify(data.field),
+                    function() {
+                        location.reload();
+                    });
+                    return false;
+                },
+                  })
+
+            });dataType="json"
+
+            }
+        });
+
+        window.onload = Change();
+
+</script>
+</html>
