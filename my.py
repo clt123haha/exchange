@@ -178,6 +178,7 @@ def moblie_login():
 #密码登录的接口
 @app.route('/user/login/password')
 def check_password():
+    print()
     username = request.json.get("username")
     password = request.json.get("password")
     cheakpassword = request.json.get("cheakpassword")
