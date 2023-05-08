@@ -13,8 +13,8 @@ from random import randint
 import os
 from data_sheet import get_sheet,session,User,ShortMessage
 from tool import bp as tool_bp
-from login import bp as login_bp
-from register import app as regist_bp
+from user import bp as login_bp
+
 
 
 app = Flask(__name__)
