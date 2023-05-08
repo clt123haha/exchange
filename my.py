@@ -12,17 +12,19 @@ from flask import Flask
 from random import randint
 import os
 from data_sheet import get_sheet,session,User,ShortMessage
-from tool import app as tool_bp
-from login import app as login_bp
+from tool import bp as tool_bp
+from login import bp as login_bp
 from register import app as regist_bp
 
 
 app = Flask(__name__)
+app.register_blueprint(login_bp)
+app.register_blueprint(tool_bp)
+
+
+
+
 
 if __name__ == '__main__':
     get_sheet()
-
-    app.register_blueprint(login_bp)
-    app.register_blueprint(tool_bp)
-    app.register_blueprint(regist_bp)
     app.run(host='0.0.0.0', debug=True)

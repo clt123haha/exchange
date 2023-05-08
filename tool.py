@@ -16,7 +16,7 @@ from random import randint
 import os
 from data_sheet import get_sheet,session,User,ShortMessage
 
-app = Blueprint("tool", __name__)
+bp = Blueprint("tool", __name__,"/tool")
 
 #图形验证码的字符
 def image_str():
@@ -124,9 +124,35 @@ def generate_random_str():
     random_str +=base_str[random.randint(0, len(base_str)-1)]
   return random_str
 
-@app.route('/get_Indonesia')
+@bp.route('/get_Indonesia')
 def get_Indonesia():
     file_name = generate_captcha_image()
     with open(file_name, 'rb') as f:
         res = base64.b64encode(f.read())
         return res
+
+@bp.route('/mobile_text',methods=['POST'])
+def test():
+    phone = request.json.get("phone")
+    if phone is None:
+        return {'code':201,'message':'请输入手机号码'}
+    try:
+         indonesia = short_message(phone)
+         print(type(indonesia))
+    except Exception as e:
+        print(e)
+        return {'code':202,'meaasge':'发送失败，请稍后再试'}
+    try:
+        result = session.query(ShortMessage).filter(ShortMessage.phonenumber == phone).first()
+        if result is None:
+            newMessage = ShortMessage(phonenumber=phone,meaasge="000000",time=str(time.time()))
+            session.add(newMessage)
+            session.commit()
+        else:
+            result.meaasge = indonesia
+            result.time = str(time.time())
+            session.add(result)
+            session.commit()
+    except Exception as e:
+        return {'code':203,'message':'验证码无效'}
+    return  {'code':200,'message':'发送成功，短信验证码有效期为十分钟'}
