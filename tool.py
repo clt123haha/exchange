@@ -16,7 +16,7 @@ from random import randint
 import os
 from data_sheet import get_sheet,session,User,ShortMessage
 
-bp = Blueprint("tool", __name__,"/tool")
+bp = Blueprint("tool", __name__, url_prefix="/tool")
 
 #图形验证码的字符
 def image_str():
@@ -131,7 +131,7 @@ def get_Indonesia():
         res = base64.b64encode(f.read())
         return res
 
-@bp.route('/mobile_text',methods=['POST'])
+@bp.route('/mobile_text')
 def test():
     phone = request.json.get("phone")
     if phone is None:
@@ -154,5 +154,6 @@ def test():
             session.add(result)
             session.commit()
     except Exception as e:
+        session.rollback()
         return {'code':203,'message':'验证码无效'}
-    return  {'code':200,'message':'发送成功，短信验证码有效期为十分钟'}
+    return  {'code':200,'message':'success'}
