@@ -19,6 +19,7 @@ import os
 from data_sheet import get_sheet,session,User,ShortMessage
 import requests
 import json
+import datetime
 
 bp = Blueprint("tool", __name__, url_prefix="/tool")
 
@@ -128,6 +129,18 @@ def generate_random_str():
     random_str +=base_str[random.randint(0, len(base_str)-1)]
   return random_str
 
+def get_age(birthday):
+    today = str(datetime.datetime.now().strftime('%Y-%m-%d')).split("-")
+    n_monthandday = today[1] + today[2]
+    n_year = today[0]
+    r_monthandday = birthday[4:]
+    r_year = birthday[:4]
+    if (int(n_monthandday) >= int(r_monthandday)):
+        r_age = int(n_year) - int(r_year)
+    else:
+        r_age = int(n_year) - int(r_year) - 1
+    return r_age
+
 @bp.route('/get_Indonesia')
 def get_Indonesia():
     file_name = generate_captcha_image()
@@ -185,5 +198,6 @@ def authenticate():
         session.commit()
         return {"code":200,"message":"认证成功"}
     return {"code":204,"message":"访问服务器失败，请稍后再试"}
+
 
 

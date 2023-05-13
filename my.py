@@ -15,6 +15,7 @@ import os
 from data_sheet import get_sheet,session,User,ShortMessage
 from tool import bp as tool_bp
 from user import bp as user_bp
+from trade import bp as trade_bp
 
 
 
@@ -24,6 +25,8 @@ CORS(app, supports_credentials=True)
 
 app.register_blueprint(user_bp,url_prefix='/user')
 app.register_blueprint(tool_bp)
+app.register_blueprint(trade_bp)
+
 
 
 
