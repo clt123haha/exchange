@@ -1,5 +1,7 @@
 import requests
 from flask import Blueprint, request, session, jsonify
+from sqlalchemy import or_
+
 from data_sheet import User
 import base64
 import random
@@ -15,6 +17,8 @@ from flask import Flask
 from random import randint
 import os
 from data_sheet import get_sheet,session,User,ShortMessage
+import requests
+import json
 
 bp = Blueprint("tool", __name__, url_prefix="/tool")
 
@@ -157,3 +161,29 @@ def test():
         session.rollback()
         return {'code':203,'message':'验证码无效'}
     return  {'code':200,'message':'success'}
+
+@bp.route("/IdentityAuthenticate",methods=['POST'])
+def authenticate():
+    account = request.json.get("account")
+    identity_card = request.json.get("identity_card")
+    name = request.json.get("name")
+    host = 'https://idenauthen.market.alicloudapi.com/idenAuthentication'
+    AppCode = "     "  # AppCode只有购买后才能获得
+    headers = {"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+               "Authorization": 'APPCODE ' + "93e6a698a46b48b984fa4bbbf4a2a2ea"}
+    data = {"idNo": identity_card, "name":name}
+    res = requests.post(host, data=data, headers=headers)
+    if res.status_code == 200:
+        result = json.loads(res.text)
+        respMessage = result.get("respMessage")
+        if respMessage != "身份证信息匹配":
+            return {"code":205,"message":"身份信息错误"}
+        birthday = result.get("birthday")
+        user= session.query(User).filter(or_(User.phone==account, User.email==account)).first()
+        user.birthday = birthday
+        session.add(user)
+        session.commit()
+        return {"code":200,"message":"认证成功"}
+    return {"code":204,"message":"访问服务器失败，请稍后再试"}
+
+

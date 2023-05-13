@@ -18,13 +18,12 @@ from user import bp as user_bp
 
 
 
+
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
 app.register_blueprint(user_bp,url_prefix='/user')
 app.register_blueprint(tool_bp)
-
-
 
 
 

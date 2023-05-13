@@ -15,6 +15,7 @@ class User(Base):
     phone = Column(String(20))
     email = Column(String(50))
     password = Column(String(50))
+    birthday =  Column(String(10))
 
     def __repr__(self):
         ID = self.id
