@@ -53,7 +53,7 @@ def check_password():
         return {'code': 302, 'message': '账号不存在'}
     if result.password != password:
         return {'code': 303, 'message': '密码错误'}
-    return {'code':200,'message':'success'}
+    return {'code':200,'message':'success','data':{'id':result.id}}
 
 @bp.route("/register",methods=['POST'])
 def register():

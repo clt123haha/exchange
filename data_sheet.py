@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer,DATETIME,FLOAT
+from sqlalchemy import Column, String, Integer,DATETIME,FLOAT,BOOLEAN
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -40,6 +40,31 @@ class ShortMessage(Base):
         TIME = self.time
         return f"User: phonenumber: {PHONENUMBER},message:{MESSAGE},time:{TIME},id: {ID}"
 
+class Transaction(Base):
+    __tablename__ = "transaction"
+    id = Column(Integer, primary_key=True)
+    seller = Column(Integer)
+    price = Column(Integer)
+    system= Column(String(20))
+    addiction= Column(BOOLEAN)
+    channel  = Column(String(30))
+    login_method = Column(String(30))
+    message = Column(String(255))
+    approved = Column(BOOLEAN)
+
+    def __repr__(self):
+        ID = self.id
+        PRICE = self.price
+        ADDICTION = self.addiction
+        CHANNEL = self.channel
+        LOGIN_METHOD = self.login_method
+        MESSAGE = self.message
+        SELLER = self.seller
+        APPROVED = self.approved
+        SYSTEM = self.system
+
+
+        return f"User: price: {PRICE},addiction:{ADDICTION},channel:{CHANNEL},id: {ID},login_method:{LOGIN_METHOD},message:{MESSAGE},seller:{SELLER},approved:{APPROVED},system:{SYSTEM}"
 
 
 def get_sheet():

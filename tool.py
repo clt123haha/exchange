@@ -155,14 +155,13 @@ def test():
         return {'code':201,'message':'请输入手机号码'}
     try:
          indonesia = short_message(phone)
-         print(type(indonesia))
     except Exception as e:
         print(e)
         return {'code':202,'meaasge':'发送失败，请稍后再试'}
     try:
         result = session.query(ShortMessage).filter(ShortMessage.phonenumber == phone).first()
         if result is None:
-            newMessage = ShortMessage(phonenumber=phone,meaasge="000000",time=str(time.time()))
+            newMessage = ShortMessage(phonenumber=phone,meaasge=indonesia,time=str(time.time()))
             session.add(newMessage)
             session.commit()
         else:
