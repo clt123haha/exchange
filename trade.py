@@ -1,4 +1,5 @@
 import requests
+import sqlalchemy
 from flask import Blueprint, request, session, jsonify
 from sqlalchemy import or_
 
@@ -40,17 +41,22 @@ def put_new_transaction():
     age = get_age(birthday)
     if age < 18:
         return {"code": 402, "message": "您未成年，不可进行交易"}
+    save_path = r"E:\trade\account"
+    if not os.path.exists(save_path):  # 检测目录是否存在，不在则创建
+        os.makedirs(save_path)
     try:
-        NewTransaction = Transaction(price = price,addiction = addiction,channel = channel,login_method = login_method,message = message,seller = user_id,system = system,approved = False)
-        session.add(NewTransaction)
+        newTransaction = Transaction(price = price,addiction = addiction,channel = channel,login_method = login_method,seller = user_id,system = system,approved = False)
+        session.add(newTransaction)
         session.commit()
+        tradtionId = session.query(Transaction).first().id
+        f = open(save_path + '\\' + str(tradtionId) + ".txt", 'w')
+        f.write(message)
     except Exception as e:
         print(e)
-        session.rollback()
-        return  {"code":203,"message":"信息存储失败"}
+        return {"code": 307, "message": "信息储存失败，请稍后再试"}
     return {"code":200,"message":"success"}
 
-@bp.route("/get_transaction",methods=["POST"])
+@bp.route("/get_transaction")
 def get_transaction():
     id= request.json.get("id")
     result = session.query(Transaction).filter(Transaction.id == id).first()
@@ -59,10 +65,21 @@ def get_transaction():
     price = result.price
     channel = result.channel
     login_method = result.login_method
-    message = result.message
     system = result.system
     addiction = result.addiction
-    data = {"price":price,"channel":channel,"login_method":login_method,"message":message,"system":system,"addiction":addiction,"seller":result.seller}
+    message = ""
+    try:
+        file_path = r'E:\trade\account' + '\\' + str(id) + ".txt"
+        if not os.path.exists(file_path):  # 检测目录是否存在，不在则创建
+            return {'code': 302, 'message': '简历不存在'}
+        f = open(file_path, 'r')
+        for line in f:
+            message += line
+        data = {"price": price, "channel": channel, "login_method": login_method, "message": message, "system": system,
+            "addiction": addiction, "seller": result.seller}
+    except Exception as e:
+        print(e)
+        return {"code": 307, "message": "信息储存失败，请稍后再试"}
     return {"code":200,"message":"success","data":data}
 
 

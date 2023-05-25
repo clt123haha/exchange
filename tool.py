@@ -60,7 +60,7 @@ def create_image():
 
 
 #存储图片
-def generate_captcha_image(save_path=r'E:\Temp\image'):
+def generate_captcha_image(save_path=r'E:\exchange\Temp\image'):
     image,img_str = create_image()
     if not os.path.exists(save_path):   # 检测目录是否存在，不在则创建
         os.makedirs(save_path)
@@ -70,7 +70,7 @@ def generate_captcha_image(save_path=r'E:\Temp\image'):
 
 
 #判断验证码是否正确以及删除过期验证码
-def check_Indonesia(indonesia,path=r'E:\Temp\image'):   # 退出程序的时候一定要记得删除验证码，否则内存占用会越来越大
+def check_Indonesia(indonesia,path=r'E:\exchange\Temp\image'):   # 退出程序的时候一定要记得删除验证码，否则内存占用会越来越大
     files=os.listdir(path) # 获取目录下的文件
     os.chdir(path)  # 进入目录
     t = time.time()
@@ -176,13 +176,13 @@ def test():
 
 @bp.route("/IdentityAuthenticate",methods=['POST'])
 def authenticate():
-    account = request.json.get("account")
+    user_id = request.json.get("user_id")
     identity_card = request.json.get("identity_card")
     name = request.json.get("name")
     host = 'https://idenauthen.market.alicloudapi.com/idenAuthentication'
-    AppCode = "     "  # AppCode只有购买后才能获得
+    AppCode = "93e6a698a46b48b984fa4bbbf4a2a2ea"  # AppCode只有购买后才能获得
     headers = {"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-               "Authorization": 'APPCODE ' + "93e6a698a46b48b984fa4bbbf4a2a2ea"}
+               "Authorization": 'APPCODE ' + AppCode}
     data = {"idNo": identity_card, "name":name}
     res = requests.post(host, data=data, headers=headers)
     if res.status_code == 200:
@@ -191,7 +191,7 @@ def authenticate():
         if respMessage != "身份证信息匹配":
             return {"code":205,"message":"身份信息错误"}
         birthday = result.get("birthday")
-        user= session.query(User).filter(or_(User.phone==account, User.email==account)).first()
+        user= session.query(User).filter(User.id == user_id).first()
         user.birthday = birthday
         session.add(user)
         session.commit()

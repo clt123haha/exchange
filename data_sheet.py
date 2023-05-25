@@ -49,7 +49,6 @@ class Transaction(Base):
     addiction= Column(BOOLEAN)
     channel  = Column(String(30))
     login_method = Column(String(30))
-    message = Column(String(255))
     approved = Column(BOOLEAN)
 
     def __repr__(self):
@@ -58,13 +57,12 @@ class Transaction(Base):
         ADDICTION = self.addiction
         CHANNEL = self.channel
         LOGIN_METHOD = self.login_method
-        MESSAGE = self.message
         SELLER = self.seller
         APPROVED = self.approved
         SYSTEM = self.system
 
 
-        return f"User: price: {PRICE},addiction:{ADDICTION},channel:{CHANNEL},id: {ID},login_method:{LOGIN_METHOD},message:{MESSAGE},seller:{SELLER},approved:{APPROVED},system:{SYSTEM}"
+        return f"User: price: {PRICE},addiction:{ADDICTION},channel:{CHANNEL},id: {ID},login_method:{LOGIN_METHOD},seller:{SELLER},approved:{APPROVED},system:{SYSTEM}"
 
 
 def get_sheet():
