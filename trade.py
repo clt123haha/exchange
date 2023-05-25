@@ -67,7 +67,10 @@ def get_transaction():
     login_method = result.login_method
     system = result.system
     addiction = result.addiction
+    approved = result.approved
     message = ""
+    if approved == 0:
+        {"code": 402, "message": "该账号为通过审核，不可进行交易"}
     try:
         file_path = r'E:\trade\account' + '\\' + str(id) + ".txt"
         if not os.path.exists(file_path):  # 检测目录是否存在，不在则创建
@@ -79,7 +82,7 @@ def get_transaction():
             "addiction": addiction, "seller": result.seller}
     except Exception as e:
         print(e)
-        return {"code": 307, "message": "信息储存失败，请稍后再试"}
+        return {"code": 307, "message": "信息获取失败，请稍后再试"}
     return {"code":200,"message":"success","data":data}
 
 
