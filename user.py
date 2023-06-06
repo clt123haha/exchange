@@ -2,7 +2,7 @@ import requests
 from flask import Blueprint, request, session, jsonify
 from sqlalchemy import or_
 
-from data_sheet import User
+from data_sheet import User, User_History, History
 
 import base64
 import random
@@ -18,6 +18,7 @@ from flask import Flask
 from random import randint
 import os
 from data_sheet import get_sheet,session,User,ShortMessage
+
 from tool import check_message,short_message,check_Indonesia
 from sqlalchemy.sql import and_,asc,desc,or_
 bp = Blueprint("user", __name__, url_prefix="/user")
@@ -79,4 +80,27 @@ def register():
     except Exception as e:
        session.rollback()
        return jsonify(code=404,message=f'{e}')
+
+
+
+@bp.route('/history/lc', methods=['PUT'])
+def lc():
+    message = request.get_json()
+    hid = message.get('hid')
+    fav = message.get('fav')
+    id=message.get('id')
+    f = session.query(User_History).filter(and_(User_History.id==id,User_History.history==hid)).first()
+    history = session.query(History).filter(History.id==hid).first()
+    if not history:
+        return jsonify(code=404,message='没有找到该记录')
+    else:
+        f.fav=fav
+        session.commit()
+        dict={
+            'gamename':history.gamename,
+            'rid':history.rid
+        }
+        return jsonify(code=200,message='success',data=dict)
+
+
 

@@ -23,6 +23,16 @@ import datetime
 
 bp = Blueprint("tool", __name__, url_prefix="/tool")
 
+def append(user1,user2,message):
+    save_path = r'E:\recruit\chat'
+    if not os.path.exists(save_path):  # 检测目录是否存在，不在则创建
+        os.makedirs(save_path)
+    try:
+        f = open(save_path + '\\' + str(user1) + ".txt", 'a')
+        f.write(str(user2)+message+'\n')
+    except Exception as e:
+        print(e)
+
 #图形验证码的字符
 def image_str():
   random_str =''

@@ -16,13 +16,15 @@ class User(Base):
     email = Column(String(50))
     password = Column(String(50))
     birthday =  Column(String(10))
+    sid = Column(Integer)
 
     def __repr__(self):
         ID = self.id
         PHONE = self.phone
         PASSWORD = self.password
         EMAIL = self.email
-        return f"User: phone: {PHONE},page:{PASSWORD},email:{EMAIL},id: {ID}"
+        SID = self.sid
+        return f"User: phone: {PHONE},page:{PASSWORD},email:{EMAIL},id: {ID},sid:{SID}"
 
 
 
@@ -64,6 +66,30 @@ class Transaction(Base):
 
         return f"User: price: {PRICE},addiction:{ADDICTION},channel:{CHANNEL},id: {ID},login_method:{LOGIN_METHOD},seller:{SELLER},approved:{APPROVED},system:{SYSTEM}"
 
+
+class User_History(Base):  # 历史记录
+    __tablename__ = 'user_history'
+    id = Column(Integer, primary_key=True)
+    history = Column(Integer, primary_key=True)  # 外键
+    fav = Column(Integer, nullable=False, default=0)  # default默认值
+
+    def __repr__(self):
+        ID = self.id
+        History = self.history
+        FAV = self.fav
+        return f"User:id:{ID},history:{History},fav:{FAV}"
+
+class History(Base):  # 历史记录的具体内容
+    __tablename__ = 'history'
+    gamename = Column(String(255), nullable=False)
+    rid = Column(Integer, nullable=False)
+    id = Column(Integer, primary_key=True)
+
+    def __repr__(self):
+        ID = self.id
+        RID = self.rid
+        GAMENAME = self.gamename
+        return f"User:id:{ID},rid:{RID},gamename:{GAMENAME}"
 
 def get_sheet():
     {
